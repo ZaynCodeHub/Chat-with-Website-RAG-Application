@@ -111,8 +111,8 @@ def get_rag_chain(vectorstore, api_key):
 
 # --- Phase 4: Main Application ---
 def main():
-    st.set_page_config(page_title="Skin Expert", page_icon="🌐")
-    st.title("🌐 Skin Expert")
+    st.set_page_config(page_title="Chat with Website", page_icon="🌐")
+    st.title("🌐 Chat with Website")
     st.caption("Enter a URL and ask questions about its content!")
 
     # Sidebar for URL input
