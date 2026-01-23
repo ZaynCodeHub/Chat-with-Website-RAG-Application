@@ -1,4 +1,4 @@
-# 🌐 Skin Expert - Chat with Website RAG App
+# 🌐 Chat with Website RAG App
 
 A Streamlit application that allows users to chat with the content of any website using Retrieval Augmented Generation (RAG).
 
