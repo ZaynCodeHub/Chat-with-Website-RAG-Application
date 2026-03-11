@@ -4,7 +4,7 @@ A powerful Streamlit application that allows users to chat with the content of a
 
 > **Note**: This application is currently configured with a **"Skin Expert" persona** (Dermatologist logic), originally designed for Jenpharm inquiries, but the core RAG architecture can be adapted for any domain.
 
-## 🚀 Key Features
+## Key Features
 - **Instant Knowledge Ingestion**: Uses `UnstructuredURLLoader` to scrape and process text from any provided URL.
 - **Advanced RAG Architecture**:
   - **Embeddings**: Uses local `HuggingFaceEmbeddings` (sentence-transformers/all-MiniLM-L6-v2) for cost-effective and fast vectorization.
@@ -16,14 +16,14 @@ A powerful Streamlit application that allows users to chat with the content of a
   - **Context-Aware**: Retrieves top-k (k=7) relevant chunks to answer queries accurately.
 - **Interactive UI**: Built with Streamlit, featuring session memory and a chat-like interface.
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Frontend**: Streamlit
 - **Orchestration**: LangChain
 - **LLM**: Google Generative AI (Gemini)
 - **Database**: ChromaDB (Vector Store)
 - **Utilities**: Python-dotenv, Unstructured
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 1. **Clone the repository**
    ```bash
