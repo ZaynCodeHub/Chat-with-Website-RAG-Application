@@ -27,8 +27,8 @@ A powerful Streamlit application that allows users to chat with the content of a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/ZaynCodeHub/Capstone-3.git
-   cd Capstone-3
+   git clone https://github.com/ZaynCodeHub/Chat-with-Website-RAG-Application.git
+   cd Chat-with-Website-RAG-Application
    ```
 
 2. **Install Dependencies**
