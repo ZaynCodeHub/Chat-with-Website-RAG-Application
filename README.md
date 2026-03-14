@@ -2,7 +2,7 @@
 
 A powerful Streamlit application that allows users to chat with the content of any website using Retrieval Augmented Generation (RAG).
 
-> **Note**: This application is currently configured with a **"Skin Expert" persona** (Dermatologist logic), originally designed for Jenpharm inquiries, but the core RAG architecture can be adapted for any domain.
+> **Note**: This application provides a generic AI assistant that can answer questions based on the content of any provided website URL.
 
 ## Key Features
 - **Instant Knowledge Ingestion**: Uses `UnstructuredURLLoader` to scrape and process text from any provided URL.
@@ -10,9 +10,8 @@ A powerful Streamlit application that allows users to chat with the content of a
   - **Embeddings**: Uses local `HuggingFaceEmbeddings` (sentence-transformers/all-MiniLM-L6-v2) for cost-effective and fast vectorization.
   - **Vector Store**: Persists data locally using **ChromaDB**.
   - **LLM**: Powered by **Google Gemini** (`gemini-2.5-flash-lite-preview-09-2025`) for high-quality, reasoned responses.
-- **Smart "Expert" Logic**:
-  - **Strict Prompting**: Enforces factual accuracy (Temperature 0.0).
-  - **Conflict Detection**: Logic to identify skincare product conflicts (e.g., Vitamin C vs. AHAs).
+- **Smart Logic**:
+  - **Strict Prompting**: Enforces factual accuracy by strictly depending on the context (Temperature 0.0).
   - **Context-Aware**: Retrieves top-k (k=7) relevant chunks to answer queries accurately.
 - **Interactive UI**: Built with Streamlit, featuring session memory and a chat-like interface.
 

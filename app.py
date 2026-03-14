@@ -5,21 +5,29 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-from langchain_community.document_loaders import UnstructuredURLLoader
+from langchain_community.document_loaders import UnstructuredURLLoader, WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
-
+import bs4
 
 # --- Phase 1: Ingestion & Processing ---
 def load_and_process_url(url: str):
     """
-    Loads content from a URL using UnstructuredURLLoader, cleans it, and splits it into chunks.
+    Loads content from a URL, cleans HTML to remove noise, and splits it into semantic chunks.
     """
     try:
-        # Initialize the loader with the specific URL
-        loader = UnstructuredURLLoader(urls=[url])
+        # Define what HTML tags to exclude from scraping (cleaning out navbars, footers, etc.)
+        strainer = bs4.SoupStrainer(
+            lambda name: name not in ["nav", "footer", "header", "aside", "script", "style"]
+        )
+        
+        # Initialize the loader with the specific URL and the strainer
+        loader = WebBaseLoader(
+            web_paths=[url],
+            bs_kwargs={"parse_only": strainer}
+        )
         
         # Load the data
         documents = loader.load()
@@ -28,9 +36,13 @@ def load_and_process_url(url: str):
             raise ValueError("No content found at the provided URL.")
             
         # Split the text into chunks
-        # chunk_size=1000: Max characters per chunk
-        # chunk_overlap=200: Overlap to maintain context between chunks
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        # chunk_size=1500: Larger chunks preserve more semantic context
+        # chunk_overlap=300: Overlap ensures ideas aren't cut off mid-sentence
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1500, 
+            chunk_overlap=300,
+            separators=["\n\n", "\n", ".", " ", ""]
+        )
         chunks = text_splitter.split_documents(documents)
         
         return chunks
@@ -84,13 +96,12 @@ def get_rag_chain(vectorstore, api_key):
         temperature=0.0
     )
 
-    # 2. "Dermatologist" Logic Prompt
-    template = """You are a helpful skin expert. Use the context below to answer the question.
+    # 2. Generic Logic Prompt
+    template = """You are a helpful assistant. Use the context below to answer the question.
     
     RULES:
-    1. If one product is for "AM" and another for "PM", explicitly state they should be separated.
-    2. Check for conflicts (e.g., Don't mix Vitamin C with AHAs/BHA/Mandelic).
-    3. If the answer is not in the context, say "I don't know".
+    1. Base your answer strictly on the provided context.
+    2. If the answer is not in the context, say "I don't know based on the provided context".
     
     Context:
     {context}
@@ -180,24 +191,13 @@ def main():
 
             # Check for greetings
             greetings = ["hello", "hi", "hey", "greetings"]
-            contact_keywords = ["contact", "email", "phone", "number", "whatsapp"]
             
             if prompt.lower().strip() in greetings:
-                greeting_response = "Hello! 👋 I am your Jenpharm AI assistant. How can I help you with your skincare routine today?"
+                greeting_response = "Hello! 👋 I am your AI assistant. How can I help you with information from the website today?"
                 with st.chat_message("assistant"):
                     st.markdown(greeting_response)
                 st.session_state.messages.append({"role": "assistant", "content": greeting_response})
             
-            elif any(keyword in prompt.lower() for keyword in contact_keywords):
-                contact_response = (
-                    "**Email:** cs@jenpharm.com\n\n"
-                    "**Phone/WhatsApp:** 03-111-444-536\n\n"
-                    "**Address:** 254 H1 Johar Town, Lahore."
-                )
-                with st.chat_message("assistant"):
-                    st.markdown(contact_response)
-                st.session_state.messages.append({"role": "assistant", "content": contact_response})
-
             else:
                 # Generate and display assistant response
                 with st.chat_message("assistant"):
